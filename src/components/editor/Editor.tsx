@@ -1,9 +1,11 @@
 import ReactQuill, { Quill } from 'react-quill';
-import EditorToolbar, { modules, formats } from './EditorToolbar';
 import 'react-quill/dist/quill.snow.css';
-import BlotFormatter from 'quill-blot-formatter';
 import { useController } from 'react-hook-form';
-Quill.register('modules/blotFormatter', BlotFormatter);
+import ImageResize from 'quill-image-resize-module-react';
+Quill.register('modules/imageResize', ImageResize);
+
+// Quill.register('modules/blotFormatter', BlotFormatter);
+
 export const Editor = ({ control, errorMessage, ...props }: any) => {
   const { field } = useController({
     name: props.name,
@@ -18,12 +20,12 @@ export const Editor = ({ control, errorMessage, ...props }: any) => {
       >
         {props.label}
       </label>
-      <EditorToolbar />
+      {/* <EditorToolbar /> */}
       <ReactQuill
         theme="snow"
         className="w-full bg-white"
-        modules={modules}
-        formats={formats}
+        modules={Editor.modules}
+        formats={Editor.formats}
         {...field}
         {...props}
       />
@@ -31,5 +33,48 @@ export const Editor = ({ control, errorMessage, ...props }: any) => {
     </div>
   );
 };
+Editor.modules = {
+  toolbar: [
+    [{ header: '1' }, { header: '2' }, { header: [3, 4, 5, 6] }, { font: [] }],
+    [{ size: [] }],
+    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+    [
+      { list: 'ordered' },
+      { list: 'bullet' },
+      { indent: '-1' },
+      { indent: '+1' },
+    ],
+    ['link', 'image', 'video'],
+    ['clean'],
+  ],
+  imageResize: {
+    parchment:
+      Quill.import(
+        'parchment',
+      ) /* Need to tell ImageResize which Parchment implementation to use */,
+
+    modules: ['Resize', 'DisplaySize', 'Toolbar'],
+  },
+};
+Editor.formats = [
+  'header',
+  'font',
+  'size',
+  'bold',
+  'italic',
+  'underline',
+  'align',
+  'strike',
+  'script',
+  'blockquote',
+  'background',
+  'list',
+  'bullet',
+  'indent',
+  'link',
+  'image',
+  'color',
+  'code-block',
+];
 
 export default Editor;
